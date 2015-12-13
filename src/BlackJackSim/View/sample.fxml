@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+
+<SplitPane dividerPositions="0.2591973244147157" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="738.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="BlackJackSim.View.Controller">
+  <items>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+         <children>
+            <Button fx:id="startSim" layoutX="18.0" layoutY="24.0" mnemonicParsing="false" onAction="#startSim" prefHeight="27.0" prefWidth="162.0" text="Start Simulation" />
+            <GridPane layoutX="18.0" layoutY="80.0" prefHeight="184.0" prefWidth="162.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="98.0" minWidth="10.0" prefWidth="90.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="108.0" minWidth="10.0" prefWidth="72.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Label text="Budget" />
+                  <Label fx:id="budgetLabel" prefHeight="17.0" prefWidth="116.0" text="Label" GridPane.columnIndex="1" />
+                  <Label prefHeight="17.0" prefWidth="66.0" text="Bets" GridPane.rowIndex="1" />
+                  <Label fx:id="betLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Label text="Round" GridPane.rowIndex="2" />
+                  <Label fx:id="roundLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Label text="Insure" GridPane.rowIndex="3" />
+                  <Label fx:id="insuranceLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <Label text="Double" GridPane.rowIndex="4" />
+                  <Label fx:id="doubleLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                  <Label text="Player's Point" GridPane.rowIndex="5" />
+                  <Label text="Dealer's Point" GridPane.rowIndex="6" />
+                  <Label fx:id="plPoints" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                  <Label fx:id="dlPoints" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+               </children>
+            </GridPane>
+         </children></AnchorPane>
+      <AnchorPane prefHeight="398.0" prefWidth="575.0">
+         <children>
+            <SplitPane dividerPositions="0.5025252525252525" orientation="VERTICAL" prefHeight="398.0" prefWidth="572.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <items>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                     <children>
+                        <ImageView fx:id="dlc1" fitHeight="150.0" fitWidth="102.0" layoutX="14.0" layoutY="22.0" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fx:id="dlc2" fitHeight="150.0" fitWidth="102.0" layoutX="116.0" layoutY="22.0" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fx:id="dlc3" fitHeight="150.0" fitWidth="102.0" layoutX="218.0" layoutY="22.0" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fx:id="dlc4" fitHeight="150.0" fitWidth="102.0" layoutX="320.0" layoutY="22.0" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fx:id="dlc5" fitHeight="150.0" fitWidth="102.0" layoutX="422.0" layoutY="23.0" pickOnBounds="true" preserveRatio="true" />
+                     </children></AnchorPane>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                     <children>
+                        <ImageView fx:id="plc1" fitHeight="150.0" fitWidth="102.0" layoutX="14.0" layoutY="22.0" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fx:id="plc2" fitHeight="150.0" fitWidth="102.0" layoutX="116.0" layoutY="22.0" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fx:id="plc3" fitHeight="150.0" fitWidth="102.0" layoutX="219.0" layoutY="22.0" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fx:id="plc4" fitHeight="150.0" fitWidth="102.0" layoutX="320.0" layoutY="22.0" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fx:id="plc5" fitHeight="150.0" fitWidth="102.0" layoutX="422.0" layoutY="22.0" pickOnBounds="true" preserveRatio="true" />
+                     </children></AnchorPane>
+              </items>
+            </SplitPane>
+         </children>
+      </AnchorPane>
+  </items>
+</SplitPane>
