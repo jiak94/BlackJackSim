@@ -45,7 +45,9 @@
                   <Label text="Player's Point" GridPane.rowIndex="6" />
                </children>
             </GridPane>
-            <Button fx:id="playOneRound" layoutX="18.0" layoutY="89.0" mnemonicParsing="false" onAction="#simOneRound" prefHeight="27.0" prefWidth="162.0" text="Simulate One Round" />
+            <Button fx:id="playOneRound" layoutX="18.0" layoutY="99.0" mnemonicParsing="false" onAction="#simOneRound" prefHeight="27.0" prefWidth="162.0" text="Simulate One Round" />
+            <Button fx:id="simBroke" layoutX="18.0" layoutY="139.0" mnemonicParsing="false" onAction="#playToBroke" prefHeight="27.0" prefWidth="162.0" text="Simulate Until Broke" />
+            <TextField fx:id="roundInput" layoutX="20.0" layoutY="63.0" prefHeight="25.0" prefWidth="162.0" />
          </children></AnchorPane>
       <AnchorPane prefHeight="398.0" prefWidth="575.0">
          <children>

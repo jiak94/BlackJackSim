@@ -26,7 +26,7 @@ public class Player implements Gamer{
     }
 
     public void bet(double amount) {
-        betAmound = amount;
+        betAmound += amount;
         budget -= amount;
     }
 
@@ -130,5 +130,10 @@ public class Player implements Gamer{
 
     public int getCardNum() {
         return cardNum;
+    }
+
+    @Override
+    public double getBetAmount() {
+        return betAmound;
     }
 }

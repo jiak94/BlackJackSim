@@ -82,4 +82,8 @@ public class Dealer implements Gamer{
     public int getCardNum() {
         return cardNum;
     }
+
+    public double getBetAmount() {
+        return 0;
+    }
 }

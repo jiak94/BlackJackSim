@@ -3,9 +3,11 @@ package BlackJackSim.View;
 import BlackJackSim.Main;
 import BlackJackSim.Model.Dealer;
 import BlackJackSim.Model.Player;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -31,6 +33,8 @@ public class Controller {
     @FXML
     private Button playOneRound;
     @FXML
+    private Button simBroke;
+    @FXML
     private ImageView plc1;
     @FXML
     private ImageView plc2;
@@ -50,6 +54,8 @@ public class Controller {
     private ImageView dlc4;
     @FXML
     private ImageView dlc5;
+    @FXML
+    private TextField roundInput;
 
     private Main main;
 
@@ -84,11 +90,22 @@ public class Controller {
     }
 
     private void setCard(ImageView cardSlot, int card) {
-        int flower = rand.nextInt(4);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int flower = rand.nextInt(4);
 
-        String imgName = "file:res/" + Integer.toString(flower) + Integer.toString(card) + ".png";
+                String imgName = "file:res/" + Integer.toString(flower) + Integer.toString(card) + ".png";
 
-        cardSlot.setImage(new Image(imgName));
+                cardSlot.setImage(new Image(imgName));
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     private void setBudgetLabel(double budget) {
@@ -104,18 +121,66 @@ public class Controller {
     }
 
     private void setInsureLabel(boolean insure) {
+
         insuranceLabel.setText(Boolean.toString(insure));
     }
 
     private void setDoubleLabel(boolean betDouble) {
-        doubleLabel.setText(Boolean.toString(betDouble));
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        doubleLabel.setText(Boolean.toString(betDouble));
+                    }
+                });
+            }
+        }).start();
     }
 
     private void plUpdatePoints(double points) {
-        plPoints.setText(Double.toString(points));
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                plPoints.setText(Double.toString(points));
+            }
+        });
     }
     private void dlUpdatePoints(double points) {
-        dlPoints.setText(Double.toString(points));
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                dlPoints.setText(Double.toString(points));
+            }
+        });
+    }
+
+    private int points(int[] deck, int cardNum) {
+        int total = 0;
+        int aces = 0;
+        for (int i = 0; i < cardNum; i++) {
+            if (deck[i] == 1) {
+                aces++;
+            }
+            else if (deck[i] >= 10) {
+                total += 10;
+            }
+            else {
+                total += deck[i];
+            }
+        }
+
+        while (aces > 0) {
+            if (total + 11 > 21) {
+                total += 1;
+            }
+            else {
+                total += 11;
+            }
+            aces--;
+        }
+        return total;
     }
 
     private void resetLabel() {
@@ -130,9 +195,27 @@ public class Controller {
     }
 
     @FXML
-    public void startSim() {
+    public void playToBroke() {
+        while (pl.getBudget() >= 20) {
+            round++;
+            resetCardSlots();
 
-        //while (round < 100 && pl.getBudget() >= 20) {
+
+            sleep();
+
+            playOneRound();
+        }
+    }
+
+    @FXML
+    public void startSim() {
+        round = 0;
+        int playRound = 100;
+        if (roundInput.getText() != null && !roundInput.getText().equals("")) {
+            playRound = Integer.parseInt(roundInput.getText());
+        }
+
+        while (pl.getBudget() >= 20 && round <= playRound) {
             round++;
             resetCardSlots();
 
@@ -141,7 +224,7 @@ public class Controller {
 
             playOneRound();
 
-        //}
+        }
 
     }
 
@@ -153,164 +236,161 @@ public class Controller {
     }
 
     private void playOneRound() {
-        //player bet
-        pl.bet(20);
-        playerBet = 20;
-        setBetLabel(20);
+        if (pl.getBudget() >= 20) {
+            //player bet
+            pl.bet(20);
+            playerBet = 20;
+            setBetLabel(20);
 
-        sleep();
+            sleep();
 
-        //add card to dealer and player, face up
-        dl.addToDeck(randCard());
-        pl.addToDeck(randCard());
+            //add card to dealer and player, face up
+            dl.addToDeck(randCard());
+            pl.addToDeck(randCard());
 
-        dlUpdatePoints(dl.points());
-        plUpdatePoints(pl.points());
-
-
-
-        setCard(dlc1, dl.getCard()[0]);
-        setCard(plc1, pl.getCard()[0]);
-
-        plUpdatePoints(pl.points());
+            dlUpdatePoints(points(dl.getCard(), dl.getCardNum()));
+            plUpdatePoints(points(pl.getCard(), pl.getCardNum()));
 
 
-        sleep();
+            setCard(dlc1, dl.getCard()[0]);
+            setCard(plc1, pl.getCard()[0]);
 
-        //add card to dealer face down
-        dl.addToDeck(randCard());
-        setBack(dlc2);
-
-        //add card to player face up
-        pl.addToDeck(randCard());
-        setCard(plc2, pl.getCard()[1]);
-
-        if (dl.getCard()[0] == 10 || dl.getCard()[0] == 1) {
-            insure = pl.insure();
-
-            //if player purchase insurance
-            if (insure) {
-                insurance = playerBet / 2;
-                pl.bet(insurance);
-                setBudgetLabel(pl.getBudget());
+            plUpdatePoints(points(pl.getCard(), pl.getCardNum()));
 
 
-                //flip dealer second card
-                setCard(dlc2, dl.getCard()[1]);
-                dlUpdatePoints(dl.points());
+            sleep();
 
-                if (dl.points() == 21) {
-                    pl.calculate(insurance * 2);
-                    dl.calculate(0);
-                } else {
-                    pl.calculate(0);
-                    dl.calculate(0);
+            //add card to dealer face down
+            dl.addToDeck(randCard());
+            setBack(dlc2);
+
+            //add card to player face up
+            pl.addToDeck(randCard());
+            setCard(plc2, pl.getCard()[1]);
+
+            if (dl.getCard()[0] == 10 || dl.getCard()[0] == 1) {
+                insure = pl.insure();
+
+                //if player purchase insurance
+                if (insure) {
+                    insurance = playerBet / 2;
+                    pl.bet(insurance);
+                    setBudgetLabel(pl.getBudget());
+
+
+                    //flip dealer second card
+                    setCard(dlc2, dl.getCard()[1]);
+                    dlUpdatePoints(points(dl.getCard(), dl.getCardNum()));
+
+                    if (points(dl.getCard(), dl.getCardNum()) == 21) {
+                        pl.calculate(insurance * 2);
+                        dl.calculate(0);
+                    } else {
+                        pl.calculate(0);
+                        dl.calculate(0);
+                    }
+                    resetLabel();
+                    return;
                 }
+            }
+
+
+            //player actions
+            plHit = pl.hit(dl.getCard()[0]);
+
+            while (plHit) {
+                int card = randCard();
+                pl.addToDeck(card);
+                plUpdatePoints(points(pl.getCard(), pl.getCardNum()));
+
+                int carNum = pl.getCardNum();
+                if (carNum == 3) {
+                    setCard(plc3, pl.getCard()[carNum - 1]);
+                } else if (carNum == 4) {
+                    setCard(plc4, pl.getCard()[carNum - 1]);
+                } else if (carNum == 5) {
+                    setCard(plc5, pl.getCard()[carNum - 1]);
+                }
+
+                plHit = pl.hit(dl.getCard()[0]);
+            }
+
+            plUpdatePoints(points(pl.getCard(), pl.getCardNum()));
+
+            if (points(pl.getCard(), pl.getCardNum()) == 21) {
+                dl.calculate(0);
+                pl.calculate(playerBet * 3);
                 resetLabel();
                 return;
             }
-        }
 
-
-        //player actions
-        plHit = pl.hit(dl.getCard()[0]);
-
-        while (plHit) {
-            int card = randCard();
-            pl.addToDeck(card);
-            plUpdatePoints(pl.points());
-
-            int carNum = pl.getCardNum();
-            if (carNum == 3) {
-                setCard(plc3, pl.getCard()[carNum - 1]);
-            }
-            else if (carNum == 4) {
-                setCard(plc4, pl.getCard()[carNum - 1]);
-            }
-            else if (carNum == 5) {
-                setCard(plc5, pl.getCard()[carNum - 1]);
+            if (points(pl.getCard(), pl.getCardNum()) > 21) {
+                dl.calculate(0);
+                pl.calculate(0);
+                resetLabel();
+                return;
             }
 
-            plHit = pl.hit(dl.getCard()[0]);
-        }
 
-        plUpdatePoints(pl.points());
+            //before dealer action, flip the section card
+            setCard(dlc2, dl.getCard()[1]);
+            dlUpdatePoints(points(dl.getCard(), dl.getCardNum()));
 
-        if (pl.points() == 21) {
-            dl.calculate(0);
-            pl.calculate(playerBet * 3);
-            resetLabel();
-            return;
-        }
-
-        if (pl.points() > 21) {
-            dl.calculate(0);
-            pl.calculate(0);
-            resetLabel();
-            return;
-        }
-
-
-        //before dealer action, flip the section card
-        setCard(dlc2, dl.getCard()[1]);
-        dlUpdatePoints(dl.points());
-
-        //dealer actions
-        dlHit = dl.hit(0);
-
-        while (dlHit) {
-            int card = randCard();
-            dl.addToDeck(card);
-            dlUpdatePoints(dl.points());
-
-            int cardNum = dl.getCardNum();
-            if (cardNum == 3) {
-                setCard(dlc3, dl.getCard()[cardNum - 1]);
-            }
-            else if (cardNum == 4) {
-                setCard(dlc4, dl.getCard()[cardNum - 1]);
-            }
-            else if (cardNum == 5) {
-                setCard(dlc5, dl.getCard()[cardNum - 1]);
-            }
-
+            //dealer actions
             dlHit = dl.hit(0);
-        }
 
-        dlUpdatePoints(dl.points());
+            while (dlHit) {
+                int card = randCard();
+                dl.addToDeck(card);
+                dlUpdatePoints(points(dl.getCard(), dl.getCardNum()));
 
-        if (dl.points() == 21) {
-            pl.calculate(0);
-            dl.calculate(0);
-            resetLabel();
-            return;
-        }
+                int cardNum = dl.getCardNum();
+                if (cardNum == 3) {
+                    setCard(dlc3, dl.getCard()[cardNum - 1]);
+                } else if (cardNum == 4) {
+                    setCard(dlc4, dl.getCard()[cardNum - 1]);
+                } else if (cardNum == 5) {
+                    setCard(dlc5, dl.getCard()[cardNum - 1]);
+                }
 
-        if (dl.points() > 21) {
-            dl.calculate(0);
-            pl.calculate(playerBet * 2);
-            resetLabel();
-            return;
-        }
+                dlHit = dl.hit(0);
+            }
 
-        if (dl.points() == pl.points()) {
-            dl.calculate(0);
-            pl.calculate(playerBet);
-            resetLabel();
-            return;
-        }
+            dlUpdatePoints(points(dl.getCard(), dl.getCardNum()));
 
-        if (dl.points() < pl.points()) {
-            dl.calculate(0);
-            pl.calculate(playerBet * 2);
-            resetLabel();
-            return;
-        }
+            if (points(dl.getCard(), dl.getCardNum()) == 21) {
+                pl.calculate(0);
+                dl.calculate(0);
+                resetLabel();
+                return;
+            }
 
-        if (dl.points() > pl.points()) {
-            dl.calculate(0);
-            pl.calculate(0);
-            resetLabel();
+            if (points(dl.getCard(), dl.getCardNum()) > 21) {
+                dl.calculate(0);
+                pl.calculate(playerBet * 2);
+                resetLabel();
+                return;
+            }
+
+            if (points(dl.getCard(), dl.getCardNum()) == points(pl.getCard(), pl.getCardNum())) {
+                dl.calculate(0);
+                pl.calculate(playerBet);
+                resetLabel();
+                return;
+            }
+
+            if (points(dl.getCard(), dl.getCardNum()) < points(pl.getCard(), pl.getCardNum())) {
+                dl.calculate(0);
+                pl.calculate(playerBet * 2);
+                resetLabel();
+                return;
+            }
+
+            if (points(dl.getCard(), dl.getCardNum()) > points(pl.getCard(), pl.getCardNum())) {
+                dl.calculate(0);
+                pl.calculate(0);
+                resetLabel();
+            }
         }
     }
 
