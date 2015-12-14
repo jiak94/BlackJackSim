@@ -3,19 +3,13 @@ package BlackJackSim.View;
 import BlackJackSim.Main;
 import BlackJackSim.Model.Dealer;
 import BlackJackSim.Model.Player;
-import javafx.animation.PauseTransition;
-import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.util.Duration;
 
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 public class Controller {
     @FXML
@@ -34,6 +28,8 @@ public class Controller {
     private Label plPoints;
     @FXML
     private Button startSim;
+    @FXML
+    private Button playOneRound;
     @FXML
     private ImageView plc1;
     @FXML
@@ -147,6 +143,13 @@ public class Controller {
 
         //}
 
+    }
+
+    @FXML
+    public void simOneRound() {
+        round++;
+        resetCardSlots();
+        playOneRound();
     }
 
     private void playOneRound() {
