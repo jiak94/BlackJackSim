@@ -90,23 +90,6 @@ public class Controller {
     }
 
     private void setCard(ImageView cardSlot, int card) {
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                int flower = rand.nextInt(4);
-//
-//                String imgName = "file:res/" + Integer.toString(flower) + Integer.toString(card) + ".png";
-//
-//                cardSlot.setImage(new Image(imgName));
-//
-//                try {
-//                    Thread.sleep(1000);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }).start();
-
         int flower = rand.nextInt(4);
 
         String imgName = "file:res/" + Integer.toString(flower) + Integer.toString(card) + ".png";
@@ -132,34 +115,14 @@ public class Controller {
     }
 
     private void setDoubleLabel(boolean betDouble) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        doubleLabel.setText(Boolean.toString(betDouble));
-                    }
-                });
-            }
-        }).start();
+        doubleLabel.setText(Boolean.toString(betDouble));
     }
 
     private void plUpdatePoints(int points) {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                plPoints.setText(Integer.toString(points));
-            }
-        });
+        plPoints.setText(Integer.toString(points));
     }
     private void dlUpdatePoints(int points) {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                dlPoints.setText(Integer.toString(points));
-            }
-        });
+        dlPoints.setText(Integer.toString(points));
     }
 
     private int points(int[] deck, int cardNum) {
@@ -225,13 +188,9 @@ public class Controller {
 
         while (pl.getBudget() >= 20 && round < playRound) {
             round++;
+            setRound(round);
             resetCardSlots();
-
-
-            sleep();
-
             playOneRound();
-
         }
 
     }
@@ -267,8 +226,6 @@ public class Controller {
             plUpdatePoints(points(pl.getCard(), pl.getCardNum()));
 
 
-            sleep();
-
             //add card to dealer face down
             dl.addToDeck(randCard());
             setBack(dlc2);
@@ -276,6 +233,7 @@ public class Controller {
             //add card to player face up
             pl.addToDeck(randCard());
             setCard(plc2, pl.getCard()[1]);
+            plUpdatePoints(points(pl.getCard(), pl.getCardNum()));
 
             if (dl.getCard()[0] >= 10 || dl.getCard()[0] == 1) {
                 insure = pl.insure();
@@ -290,6 +248,7 @@ public class Controller {
                     //flip dealer second card
                     setCard(dlc2, dl.getCard()[1]);
                     dlUpdatePoints(points(dl.getCard(), dl.getCardNum()));
+
 
                     if (points(dl.getCard(), dl.getCardNum()) == 21) {
                         pl.calculate(insurance * 2);
@@ -310,7 +269,7 @@ public class Controller {
             while (plHit) {
                 int card = randCard();
                 pl.addToDeck(card);
-                plUpdatePoints(points(pl.getCard(), pl.getCardNum()));
+                //plUpdatePoints(points(pl.getCard(), pl.getCardNum()));
 
                 int carNum = pl.getCardNum();
                 if (carNum == 3) {
@@ -325,6 +284,7 @@ public class Controller {
             }
 
             plUpdatePoints(points(pl.getCard(), pl.getCardNum()));
+            System.out.println("Card Num: " + pl.getCardNum());
 
             if (points(pl.getCard(), pl.getCardNum()) == 21) {
                 dl.calculate(0);
@@ -341,9 +301,9 @@ public class Controller {
             }
 
 
-            //before dealer action, flip the section card
+            //before dealer action, flip the second card
             setCard(dlc2, dl.getCard()[1]);
-            dlUpdatePoints(points(dl.getCard(), dl.getCardNum()));
+            //dlUpdatePoints(points(dl.getCard(), dl.getCardNum()));
 
             //dealer actions
             dlHit = dl.hit(0);
