@@ -136,4 +136,8 @@ public class Player implements Gamer{
     public double getBetAmount() {
         return betAmound;
     }
+
+    public void setBudget(double budget) {
+        this.budget = budget;
+    }
 }

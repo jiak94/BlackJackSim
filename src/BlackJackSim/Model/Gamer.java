@@ -16,4 +16,5 @@ public interface Gamer {
     public int[] getCard();
     public int getCardNum();
     public double getBetAmount();
+    public void setBudget(double budget);
 }

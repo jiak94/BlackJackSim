@@ -90,22 +90,28 @@ public class Controller {
     }
 
     private void setCard(ImageView cardSlot, int card) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                int flower = rand.nextInt(4);
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                int flower = rand.nextInt(4);
+//
+//                String imgName = "file:res/" + Integer.toString(flower) + Integer.toString(card) + ".png";
+//
+//                cardSlot.setImage(new Image(imgName));
+//
+//                try {
+//                    Thread.sleep(1000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }).start();
 
-                String imgName = "file:res/" + Integer.toString(flower) + Integer.toString(card) + ".png";
+        int flower = rand.nextInt(4);
 
-                cardSlot.setImage(new Image(imgName));
+        String imgName = "file:res/" + Integer.toString(flower) + Integer.toString(card) + ".png";
 
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+        cardSlot.setImage(new Image(imgName));
     }
 
     private void setBudgetLabel(double budget) {
@@ -139,19 +145,19 @@ public class Controller {
         }).start();
     }
 
-    private void plUpdatePoints(double points) {
+    private void plUpdatePoints(int points) {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                plPoints.setText(Double.toString(points));
+                plPoints.setText(Integer.toString(points));
             }
         });
     }
-    private void dlUpdatePoints(double points) {
+    private void dlUpdatePoints(int points) {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                dlPoints.setText(Double.toString(points));
+                dlPoints.setText(Integer.toString(points));
             }
         });
     }
@@ -196,12 +202,11 @@ public class Controller {
 
     @FXML
     public void playToBroke() {
+        resetCardSlots();
+        resetLabel();
         while (pl.getBudget() >= 20) {
             round++;
             resetCardSlots();
-
-
-            sleep();
 
             playOneRound();
         }
@@ -209,13 +214,16 @@ public class Controller {
 
     @FXML
     public void startSim() {
+        resetCardSlots();
+        resetLabel();
         round = 0;
         int playRound = 100;
+        pl.setBudget(1000);
         if (roundInput.getText() != null && !roundInput.getText().equals("")) {
             playRound = Integer.parseInt(roundInput.getText());
         }
 
-        while (pl.getBudget() >= 20 && round <= playRound) {
+        while (pl.getBudget() >= 20 && round < playRound) {
             round++;
             resetCardSlots();
 
@@ -231,6 +239,7 @@ public class Controller {
     @FXML
     public void simOneRound() {
         round++;
+        resetLabel();
         resetCardSlots();
         playOneRound();
     }
@@ -268,9 +277,9 @@ public class Controller {
             pl.addToDeck(randCard());
             setCard(plc2, pl.getCard()[1]);
 
-            if (dl.getCard()[0] == 10 || dl.getCard()[0] == 1) {
+            if (dl.getCard()[0] >= 10 || dl.getCard()[0] == 1) {
                 insure = pl.insure();
-
+                setInsureLabel(insure);
                 //if player purchase insurance
                 if (insure) {
                     insurance = playerBet / 2;
@@ -289,7 +298,7 @@ public class Controller {
                         pl.calculate(0);
                         dl.calculate(0);
                     }
-                    resetLabel();
+
                     return;
                 }
             }
@@ -320,14 +329,14 @@ public class Controller {
             if (points(pl.getCard(), pl.getCardNum()) == 21) {
                 dl.calculate(0);
                 pl.calculate(playerBet * 3);
-                resetLabel();
+
                 return;
             }
 
             if (points(pl.getCard(), pl.getCardNum()) > 21) {
                 dl.calculate(0);
                 pl.calculate(0);
-                resetLabel();
+
                 return;
             }
 
@@ -361,35 +370,35 @@ public class Controller {
             if (points(dl.getCard(), dl.getCardNum()) == 21) {
                 pl.calculate(0);
                 dl.calculate(0);
-                resetLabel();
+
                 return;
             }
 
             if (points(dl.getCard(), dl.getCardNum()) > 21) {
                 dl.calculate(0);
                 pl.calculate(playerBet * 2);
-                resetLabel();
+
                 return;
             }
 
             if (points(dl.getCard(), dl.getCardNum()) == points(pl.getCard(), pl.getCardNum())) {
                 dl.calculate(0);
                 pl.calculate(playerBet);
-                resetLabel();
+
                 return;
             }
 
             if (points(dl.getCard(), dl.getCardNum()) < points(pl.getCard(), pl.getCardNum())) {
                 dl.calculate(0);
                 pl.calculate(playerBet * 2);
-                resetLabel();
+
                 return;
             }
 
             if (points(dl.getCard(), dl.getCardNum()) > points(pl.getCard(), pl.getCardNum())) {
                 dl.calculate(0);
                 pl.calculate(0);
-                resetLabel();
+
             }
         }
     }

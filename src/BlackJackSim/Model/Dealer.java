@@ -86,4 +86,6 @@ public class Dealer implements Gamer{
     public double getBetAmount() {
         return 0;
     }
+
+    public void setBudget(double budget){}
 }
